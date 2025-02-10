@@ -30,15 +30,17 @@
         <h3 class="title-form">Agregar Producto</h3>
         <form method="POST">
             {% csrf_token %}
-            <div class="form-group">
+            <div class="form-group" style="margin-left: 10px;">
                 <label for="id_nombre">Nombre:</label>
                 {{ form_agregar.nombre }}
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-left: 10px;">
                 <label for="id_precio">Precio:</label>
                 {{ form_agregar.precio }}
             </div>
-            <button type="submit" name="agregar_producto">Guardar Producto</button>
+            <div style="text-align: center; margin-top: 10px;">
+                <button class="buttons-formularios" type="submit" name="agregar_producto">Guardar Producto</button>
+            </div>
         </form>
     </div>
 
@@ -47,48 +49,56 @@
         <h3 class="title-form">Modificar Producto</h3>
         <form method="POST">
             {% csrf_token %}
-            <div class="form-group">
+            <div class="form-group" style="margin-left: 10px;">
                 <label for="producto_id">ID del Producto:</label>
                 <input type="number" name="producto_id" id="producto_id" required>
             </div>
-            <button type="submit">Buscar Producto</button>
+            <div style="text-align: center; margin-top: 10px;">
+                <button class="buttons-formularios" type="submit">Buscar Producto</button>
+            </div>
         </form>
 
+        {% if error %}
+            <p class="error-message" style="color: red;">{{ error }}</p>
+        {% endif %}
+
         {% if form %}
-            <h3>Modificar Producto: {{ form.instance.nombre }}</h3>
+            <h3 class="title-form">Modificar Producto: {{ form.instance.nombre }}</h3>
             <form method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="producto_id" value="{{ form.instance.id }}">
-                <div class="form-group">
+                <div class="form-group" style="margin-left: 10px;">
                     <label for="id_nombre">Nombre:</label>
                     {{ form.nombre }}
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-left: 10px;">
                     <label for="id_precio">Precio:</label>
                     {{ form.precio }}
                 </div>
-                <button type="submit" name="modificar_producto">Guardar Cambios</button>
+                <div style="text-align: center; margin-top: 10px;">
+                    <button class="buttons-formularios" type="submit" name="modificar_producto">Guardar Cambios</button>
+                </div>
             </form>
         {% endif %}
     </div>
 
     <!-- Formulario de eliminar producto -->
     <div id="form-eliminar" class="container-forms {% if formulario_activo == 'eliminar' %}visible{% else %}oculto{% endif %}">
-        <h3>Eliminar Producto por ID</h3>
+        <h3 class="title-form">Eliminar Producto por ID</h3>
         <form method="POST">
             {% csrf_token %}
-            <input type="number" name="producto_id" placeholder="ID del producto a eliminar" required>
-            <button type="submit" name="eliminar_producto">Eliminar Producto</button>
+            <div class="form-group"  style="margin-left: 10px;">
+                <label for="id_nombre">ID del producto:</label>
+                <input type="number" name="producto_id" placeholder="ID del producto a eliminar" required>
+            </div>
+            <div style="text-align: center;  margin-top: 10px;">
+                <button class="buttons-formularios" type="submit" name="eliminar_producto">Eliminar Producto</button>
+            </div>
         </form>
     
         {% if error %}
-            <p style="color: red;">{{ error }}</p>
+            <p class="error-message" style="color: red;">{{ error }}</p>
         {% endif %}
     </div>
-
-    {% if error %}
-        <p class="error-message">{{ error }}</p>
-    {% endif %}
-
 </body>
 </html>
