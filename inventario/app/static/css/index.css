@@ -1,0 +1,78 @@
+body {
+    background-color: cornsilk;
+}
+
+/*clases para el container de la lista de productos*/
+.title-container{
+    text-align: center;
+}
+.container-list{
+    background-color: burlywood;
+    
+}
+
+.container-list{
+    width: 400px;
+    border-radius: 30px;
+    height: 200px;
+    margin-left: 200px;
+    margin-top: 50px;
+}
+
+/*clases el container de los botones agregar, modificar y eliminar*/ 
+.container-buttoms{
+    margin-left: 210px;
+    margin-top: 20px;
+}
+
+.buttons {
+    background-color: blanchedalmond;
+    border-radius: 10px;
+}
+
+
+/*clases para el container de los formularios (agregar y eliminar)*/
+.container-forms{
+    background-color: burlywood;
+    width: 400px;
+    height: 115px;
+    margin-left: 200px;
+    margin-top: 50px;
+    border-radius: 15px;
+}
+
+.title-form{
+    text-align: center;
+}
+.input-forms{
+    margin-left: 10px;
+}
+
+.buttons-forms{
+    margin-top: 5px;
+    margin-left: 10px;
+    background-color: blanchedalmond;
+    border-radius: 10px;
+}
+
+/*clase para el formulario modificar*/
+.search-producto {
+    background-color: burlywood;
+    width: 400px;
+    height: 220px;
+    margin-left: 200px;
+    margin-top: 50px;
+    border-radius: 15px;
+}
+
+.modify-form {
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.oculto {
+    display: none;
+}
+.visible {
+    display: block;
+}
