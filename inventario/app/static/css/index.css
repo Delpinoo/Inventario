@@ -30,6 +30,11 @@ body {
     border-radius: 10px;
 }
 
+.buttons-formularios{
+    background-color: blanchedalmond;
+    border-radius: 10px;
+}
+
 
 /*clases para el container de los formularios (agregar y eliminar)*/
 .container-forms{
@@ -59,7 +64,7 @@ body {
 .search-producto {
     background-color: burlywood;
     width: 400px;
-    height: 220px;
+    height: 230px;
     margin-left: 200px;
     margin-top: 50px;
     border-radius: 15px;
