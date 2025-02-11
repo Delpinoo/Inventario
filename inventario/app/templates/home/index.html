@@ -12,9 +12,27 @@
 <body>
     <div class="container-list">
         <h1 class="title-container">Lista De Productos</h1>
+    
+        <!-- Formulario para filtrar productos por sucursal -->
+        <form method="get" action="{% url 'home' %}">
+            <label for="sucursal">Filtrar por Sucursal:</label>
+            <select name="sucursal" id="sucursal">
+                <option value="">Seleccione una sucursal</option>
+                {% for sucursal in sucursales %}
+                    <option value="{{ sucursal.id }}" {% if request.GET.sucursal == sucursal.id|stringformat:"s" %}selected{% endif %}>
+                        {{ sucursal.nombre_sucursal }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filtrar</button>
+        </form>
+    
+        <!-- Lista de productos -->
         <ul>
             {% for producto in productos %}
-                <li>{{ producto.id }} - {{ producto.nombre }} - {{ producto.precio }}</li>
+                <li>{{ producto.id }} - {{ producto.nombre }} - ${{ producto.precio }} - {{ producto.sucursal.nombre_sucursal }}</li>
+            {% empty %}
+                <li>No hay productos disponibles.</li>
             {% endfor %}
         </ul>
     </div>
@@ -23,7 +41,7 @@
         <button class="buttons" onclick="mostrarFormulario('agregar')">Agregar Producto</button>
         <button class="buttons" onclick="mostrarFormulario('modificar')">Modificar Producto</button>
         <button class="buttons" onclick="mostrarFormulario('eliminar')">Eliminar Producto</button>
-        <a class="buttons" href="{% url 'home' %}?exportar=true" >Descargar Inventario</a>
+        <a class="buttons" href="{% url 'home' %}?exportar=true&sucursal={{ request.GET.sucursal }}" >Descargar Inventario</a>
     </div>
 
     <!-- Formulario para agregar producto -->
