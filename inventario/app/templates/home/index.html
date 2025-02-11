@@ -8,40 +8,67 @@
     <title>Inventario</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
     <script src="{% static 'js/home.js' %}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 </head>
 <body>
-    <div class="container-list">
-        <h1 class="title-container">Lista De Productos</h1>
-    
-        <!-- Formulario para filtrar productos por sucursal -->
-        <form method="get" action="{% url 'home' %}">
-            <label for="sucursal">Filtrar por Sucursal:</label>
-            <select name="sucursal" id="sucursal">
-                <option value="">Seleccione una sucursal</option>
-                {% for sucursal in sucursales %}
-                    <option value="{{ sucursal.id }}" {% if request.GET.sucursal == sucursal.id|stringformat:"s" %}selected{% endif %}>
-                        {{ sucursal.nombre_sucursal }}
-                    </option>
-                {% endfor %}
-            </select>
-            <button type="submit">Filtrar</button>
-        </form>
-    
-        <!-- Lista de productos -->
-        <ul>
-            {% for producto in productos %}
-                <li>{{ producto.id }} - {{ producto.nombre }} - ${{ producto.precio }} - {{ producto.sucursal.nombre_sucursal }}</li>
-            {% empty %}
-                <li>No hay productos disponibles.</li>
+    <h1 class="title-container">Inventario de productos</h1>
+
+<div class="tabla-productos">
+    <!-- Formulario para filtrar productos por sucursal -->
+    <form method="get" action="{% url 'home' %}" class="mb-3">
+        <label for="sucursal">Filtrar por Sucursal:</label>
+        <select name="sucursal" id="sucursal" class="form-select d-inline-block w-auto">
+            <option value="">Seleccione una sucursal</option>
+            {% for sucursal in sucursales %}
+                <option value="{{ sucursal.id }}" {% if request.GET.sucursal == sucursal.id|stringformat:"s" %}selected{% endif %}>
+                    {{ sucursal.nombre_sucursal }}
+                </option>
             {% endfor %}
-        </ul>
-    </div>
+        </select>
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+    <!-- Tabla de productos -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Sucursal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+                <tr>
+                    <td>{{ producto.id }}</td>
+                    <td>{{ producto.nombre }}</td>
+                    <td>${{ producto.precio }}</td>
+                    <td>{{ producto.sucursal.nombre_sucursal }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No hay productos disponibles.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 
     <div class="container-buttoms">
-        <button class="buttons" onclick="mostrarFormulario('agregar')">Agregar Producto</button>
-        <button class="buttons" onclick="mostrarFormulario('modificar')">Modificar Producto</button>
-        <button class="buttons" onclick="mostrarFormulario('eliminar')">Eliminar Producto</button>
-        <a class="buttons" href="{% url 'home' %}?exportar=true&sucursal={{ request.GET.sucursal }}" >Descargar Inventario</a>
+        <button class="btn btn-success" onclick="mostrarFormulario('agregar')">
+            <i class="bi bi-plus-circle"> Agregar Producto</i>
+        </button>
+
+
+        <button class="btn btn-warning" onclick="mostrarFormulario('modificar')">
+            <i class="bi bi-pencil-fill"> Modificar Producto</i>
+        </button>
+
+        <button class="btn btn-danger" onclick="mostrarFormulario('eliminar')">
+            <i class="bi bi-x-circle"> Eliminar Producto</i>
+        </button>
+        <a class="btn btn-info" href="{% url 'home' %}?exportar=true&sucursal={{ request.GET.sucursal }}" ><i class=" bi bi-arrow-down-circle">Descargar Inventario</i></a>
     </div>
 
     <!-- Formulario para agregar producto -->
@@ -119,5 +146,9 @@
             <p class="error-message" style="color: red;">{{ error }}</p>
         {% endif %}
     </div>
+</div>
+
+
+    
 </body>
 </html>
