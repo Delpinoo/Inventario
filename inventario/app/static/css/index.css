@@ -1,6 +1,42 @@
 body {
-    background-color: cornsilk;
+    background-color: lightgrey;
 }
+
+/*
+.tabla-productos {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    background-color: lightgray;
+    padding: 20px;
+}
+*/
+
+
+
+.tabla-productos{
+    position: absolute;
+    margin-top: 70px;
+    width: 1000px;
+    justify-content: center;
+    margin-left: 250px;
+}
+
+
+.table th, .table td {
+    padding: 5px; /* Reduce el espacio entre celdas */
+    text-align: center; /* Centra el texto */
+}
+
+
+
+
+
+
+
+
 
 /*clases para el container de la lista de productos*/
 .title-container{
