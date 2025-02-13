@@ -5,6 +5,7 @@ from .models import Producto, Sucursal
 from django.conf import settings
 from datetime import datetime
 from openpyxl.cell.cell import Cell
+from django.http import JsonResponse
 import openpyxl
 import os
 
@@ -32,12 +33,13 @@ def home(request):
     error = None
     sucursales = Sucursal.objects.all()
 
-
-    sucursal_id = request.GET.get('sucursal')
+    sucursal_id = request.GET.get('sucursal', None)  # Si no hay 'sucursal', será None
+    # Si no hay sucursal seleccionada, mostrar todos los productos
     if sucursal_id:
         productos = Producto.objects.filter(sucursal_id=sucursal_id)
     else:
-        producto
+        productos = Producto.objects.all()  # Mostrar todos los productos si no hay filtro de sucursal
+
 
 
     # Agregar producto
@@ -50,41 +52,39 @@ def home(request):
             producto.save()
             return redirect(f"{request.path}?sucursal={sucursal_id}")
 
+    if request.method == 'POST' and 'agregar_producto' in request.POST:
+            formulario_activo = 'agregar'
+            form_agregar = ProductoForm(request.POST)
+            if form_agregar.is_valid():
+                producto = form_agregar.save(commit=False)
+                producto.sucursal_id = sucursal_id
+                producto.save()
+                return redirect(f"{request.path}?sucursal={sucursal_id}")
+
+
+
     # Buscar producto para modificar
-    if request.method == 'POST' and 'producto_id' in request.POST and 'modificar_producto' not in request.POST:
-        formulario_activo = 'modificar'
-        producto_id = request.POST['producto_id']
+    if request.method == "POST" and "producto_id" in request.POST:
+        producto_id = request.POST.get("producto_id")
         try:
-            # Filtrar por sucursal antes de obtener el producto
-            producto = Producto.objects.filter(sucursal_id=sucursal_id).get(id=producto_id)
-            form = ProductoForm(instance=producto)
+            producto = Producto.objects.get(id=producto_id, sucursal_id=sucursal_id)
         except Producto.DoesNotExist:
-            return render(request, 'home/index.html', {
-                'error': 'Producto no encontrado en esta sucursal',
-                'productos': productos,
-                'form_agregar': form_agregar,
-                'formulario_activo': formulario_activo,
-            })
+            producto = None  # No encontramos el producto
 
-    # Guardar cambios
-    if request.method == 'POST' and 'modificar_producto' in request.POST:
-        formulario_activo = 'modificar'
-        producto_id = request.POST['producto_id']
-        # Filtrar por sucursal antes de obtener el producto
-        producto = get_object_or_404(Producto, id=producto_id, sucursal_id=sucursal_id)
-        form = ProductoForm(request.POST, instance=producto)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-
+    # Modificar producto
+    if request.method == 'POST' and 'modificar_producto' in request.POST and producto:
+        producto.nombre = request.POST['nuevo_nombre']
+        producto.precio = request.POST['nuevo_precio']
+        producto.save()
+        return redirect(f"{request.path}?sucursal={sucursal_id}")
+        
     #eliminar
     if request.method == 'POST' and 'eliminar_producto' in request.POST:
         formulario_activo = 'ninguno'
         producto_id = request.POST['producto_id']
         try:
             producto = Producto.objects.filter(sucursal_id=sucursal_id).get(id=producto_id)
-            producto.delete()
-            return redirect('home') 
+            producto.delete() 
         except Producto.DoesNotExist:
             error = 'Producto no encontrado en esta sucursal'
 

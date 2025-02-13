@@ -48,7 +48,7 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4">No hay productos disponibles.</td>
+                    <td colspan="4">Para ver los productos debe filtrar por sucursal.</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -56,99 +56,131 @@
 
 
     <div class="container-buttoms">
-        <button class="btn btn-success" onclick="mostrarFormulario('agregar')">
+        <button class="btn btn-success" onclick="mostrarModal('agregar')">
             <i class="bi bi-plus-circle"> Agregar Producto</i>
         </button>
 
 
-        <button class="btn btn-warning" onclick="mostrarFormulario('modificar')">
+        <button class="btn btn-warning" onclick="mostrarModal('modificar')">
             <i class="bi bi-pencil-fill"> Modificar Producto</i>
         </button>
 
-        <button class="btn btn-danger" onclick="mostrarFormulario('eliminar')">
+        <button class="btn btn-danger" onclick="mostrarModal('eliminar')">
             <i class="bi bi-x-circle"> Eliminar Producto</i>
         </button>
         <a class="btn btn-info" href="{% url 'home' %}?exportar=true&sucursal={{ request.GET.sucursal }}" ><i class=" bi bi-arrow-down-circle">Descargar Inventario</i></a>
     </div>
 
-    <!-- Formulario para agregar producto -->
-    <div id="form-agregar" class="container-forms {% if formulario_activo == 'agregar' %}visible{% else %}oculto{% endif %}">
-        <h3 class="title-form">Agregar Producto</h3>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-group" style="margin-left: 10px;">
-                <label for="id_nombre">Nombre:</label>
-                {{ form_agregar.nombre }}
+        <!-- Modal para Agregar Producto -->
+    <div id="modal-agregar" class="modal fade" tabindex="-1" aria-labelledby="modal-agregar-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-agregar-label">Agregar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario de agregar producto -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group" style="margin-left: 10px;">
+                            <label for="id_nombre">Nombre:</label>
+                            {{ form_agregar.nombre }}
+                        </div>
+                        <div class="form-group" style="margin-left: 10px;">
+                            <label for="id_precio">Precio:</label>
+                            {{ form_agregar.precio }}
+                        </div>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <button class="btn btn-success" type="submit" name="agregar_producto">Guardar Producto</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group" style="margin-left: 10px;">
-                <label for="id_precio">Precio:</label>
-                {{ form_agregar.precio }}
-            </div>
-            <div style="text-align: center; margin-top: 10px;">
-                <button class="buttons-formularios" type="submit" name="agregar_producto">Guardar Producto</button>
-            </div>
-        </form>
+        </div>
     </div>
 
-    <!-- Formulario de modificar producto -->
-    <div id="form-modificar" class="search-producto {% if formulario_activo == 'modificar' %}visible{% else %}oculto{% endif %}">
-        <h3 class="title-form">Modificar Producto</h3>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-group" style="margin-left: 10px;">
-                <label for="producto_id">ID del Producto:</label>
-                <input type="number" name="producto_id" id="producto_id" required>
-            </div>
-            <div style="text-align: center; margin-top: 10px;">
-                <button class="buttons-formularios" type="submit">Buscar Producto</button>
-            </div>
-        </form>
+    <!-- Modal para Modificar Producto -->
+    <div id="modal-modificar" class="modal fade" tabindex="-1" aria-labelledby="modal-modificar-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-modificar-label">Modificar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulario de modificar producto -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group" style="margin-left: 10px;">
+                            <label for="id_producto">ID del Producto:</label>
+                            <input type="number" name="producto_id" id="id_producto" required>
+                            <button type="submit" class="btn btn-primary">🔍 Buscar</button>
+                        </div>
 
-        {% if error %}
-            <p class="error-message" style="color: red;">{{ error }}</p>
-        {% endif %}
-
-        {% if form %}
-            <h3 class="title-form">Modificar Producto: {{ form.instance.nombre }}</h3>
-            <form method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="producto_id" value="{{ form.instance.id }}">
-                <div class="form-group" style="margin-left: 10px;">
-                    <label for="id_nombre">Nombre:</label>
-                    {{ form.nombre }}
+                        {% if producto %}
+                            <!-- Formulario solo visible si el producto existe -->
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="id_nombre">Nuevo Nombre:</label>
+                                <input type="text" name="nuevo_nombre" id="id_nombre" placeholder="Nuevo nombre del producto" value="{{ producto.nombre }}">
+                            </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <label for="id_precio">Nuevo Precio:</label>
+                                <input type="number" name="nuevo_precio" id="id_precio" placeholder="Nuevo precio del producto" value="{{ producto.precio }}">
+                            </div>
+                            <div style="text-align: center; margin-top: 10px;">
+                                <button class="btn btn-warning" type="submit" name="modificar_producto">Modificar Producto</button>
+                            </div>
+                        {% else %}
+                            <!-- Mensaje si no se encuentra el producto -->
+                            <p class="text-danger">Producto no encontrado. Por favor, verifique el ID ingresado.</p>
+                        {% endif %}
+                    </form>
                 </div>
-                <div class="form-group" style="margin-left: 10px;">
-                    <label for="id_precio">Precio:</label>
-                    {{ form.precio }}
-                </div>
-                <div style="text-align: center; margin-top: 10px;">
-                    <button class="buttons-formularios" type="submit" name="modificar_producto">Guardar Cambios</button>
-                </div>
-            </form>
-        {% endif %}
+            </div>
+        </div>
     </div>
 
-    <!-- Formulario de eliminar producto -->
-    <div id="form-eliminar" class="container-forms {% if formulario_activo == 'eliminar' %}visible{% else %}oculto{% endif %}">
-        <h3 class="title-form">Eliminar Producto por ID</h3>
-        <form method="POST">
-            {% csrf_token %}
-            <div class="form-group"  style="margin-left: 10px;">
-                <label for="id_nombre">ID del producto:</label>
-                <input type="number" name="producto_id" placeholder="ID del producto a eliminar" required>
+
+    <!-- Modal para Eliminar Producto -->
+    <div id="modal-eliminar" class="modal fade" tabindex="-1" aria-labelledby="modal-eliminar-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-eliminar-label">Eliminar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Mostrar error si existe -->
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Formulario para eliminar producto -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group" style="margin-left: 10px;">
+                            <label for="producto_id">ID del producto:</label>
+                            <input type="number" name="producto_id" placeholder="ID del producto a eliminar" required>
+                        </div>
+                        <div style="text-align: center; margin-top: 10px;">
+                            <button class="btn btn-danger" type="submit" name="eliminar_producto">Eliminar Producto</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div style="text-align: center;  margin-top: 10px;">
-                <button class="buttons-formularios" type="submit" name="eliminar_producto">Eliminar Producto</button>
-            </div>
-        </form>
-    
-        {% if error %}
-            <p class="error-message" style="color: red;">{{ error }}</p>
-        {% endif %}
+        </div>
     </div>
 </div>
 
 
-    
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
