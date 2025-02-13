@@ -1,17 +1,15 @@
-function mostrarFormulario(formularioId) {
-    // Ocultar todos los formularios
-    const formularios = document.querySelectorAll('.container-forms, .search-producto');
-    formularios.forEach(formulario => {
-        formulario.classList.remove('visible');
-        formulario.classList.add('oculto');
-    });
-
-    // Mostrar el formulario seleccionado
-    const formularioSeleccionado = document.getElementById(`form-${formularioId}`);
-    if (formularioSeleccionado) {
-        formularioSeleccionado.classList.remove('oculto');
-        formularioSeleccionado.classList.add('visible');
-    } else {
-        console.error(`Formulario con ID 'form-${formularioId}' no encontrado.`);
+function mostrarModal(tipo) {
+    let modalId = '';
+    
+    if (tipo === 'agregar') {
+        modalId = '#modal-agregar';
+    } else if (tipo === 'modificar') {
+        modalId = '#modal-modificar';
+    } else if (tipo === 'eliminar') {
+        modalId = '#modal-eliminar';
     }
+
+    // Mostrar el modal correspondiente
+    const modal = new bootstrap.Modal(document.querySelector(modalId));
+    modal.show();
 }
