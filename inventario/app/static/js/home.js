@@ -1,18 +1,50 @@
-function mostrarModal(tipo) {
-    let modalId = '';
+
+function mostrarModal(tipo, id, nombre, precio, sucursal) {
+    console.log('Tipo:', tipo);
+    console.log('ID:', id);
+    console.log('Nombre:', nombre);
+    console.log('Precio:', precio);
+    console.log('Sucursal:', sucursal);
+    
+    // Ahora puedes usar estos valores para llenar el formulario en tu modal.
+    if (tipo === 'modificar') {
+        // Supongamos que el modal tiene campos con id #nombre, #precio, y #sucursal.
+        document.querySelector('#nombre').value = nombre;
+        document.querySelector('#precio').value = precio;
+        document.querySelector('#producto-id').value = id; 
+        
+        // Aquí puedes abrir el modal.
+        const modal = new bootstrap.Modal(document.querySelector('#modal-modificar'));
+        modal.show();
+    }
     
     if (tipo === 'agregar') {
-        modalId = '#modal-agregar';
-    } else if (tipo === 'modificar') {
-        modalId = '#modal-modificar';
-    } else if (tipo === 'eliminar') {
-        modalId = '#modal-eliminar';
+        // Supongamos que el modal tiene campos con id #nombre, #precio, y #sucursal.
+        document.querySelector('#nombre').value = nombre;
+        document.querySelector('#precio').value = precio;
+        document.querySelector('#sucursal').value = sucursal;
+
+        
+        // Aquí puedes abrir el modal.
+        const modal = new bootstrap.Modal(document.querySelector('#modal-agregar'));
+        modal.show();
     }
 
-    // Mostrar el modal correspondiente
-    const modal = new bootstrap.Modal(document.querySelector(modalId));
+}
+
+
+/*
+function mostrarModal(id, nombre, precio, sucursal) {
+    // Rellenar los campos del modal con la información del producto
+    document.getElementById('nombre').value = nombre;
+    document.getElementById('precio').value = precio;
+    document.getElementById('sucursal').value = sucursal;
+
+    // Mostrar el modal
+    var modal = new bootstrap.Modal(document.getElementById('modalModificar'));
     modal.show();
 }
+*/
 
 function eliminarProductos() {
     const productosSeleccionados = document.querySelectorAll('input[name="producto"]:checked');
@@ -73,3 +105,33 @@ function actualizarConteoProductos() {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const checkAll = document.getElementById('check-all');
+    
+    if (checkAll) {
+        checkAll.addEventListener('change', function(event) {
+            // Obtener todas las checkboxes de productos
+            const checkboxes = document.querySelectorAll('input[name="producto"]');
+            
+            // Seleccionar o desmarcar todas las checkboxes de productos
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = event.target.checked;
+            });
+        });
+    } else {
+        console.error('El checkbox con el id "check-all" no existe.');
+    }
+});
+/*
+document.getElementById('formModificar').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Obtener los valores del formulario
+    const nombre = document.getElementById('nombre').value;
+    const precio = document.getElementById('precio').value;
+    const sucursal = document.getElementById('sucursal').value;
+    
+    // Aquí puedes agregar la lógica para enviar los datos al servidor para guardar los cambios
+    console.log('Datos modificados:', { nombre, precio, sucursal });
+});
+*/

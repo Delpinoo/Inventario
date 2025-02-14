@@ -63,23 +63,6 @@ def home(request):
                 producto.save()
                 return redirect(f"{request.path}?sucursal={sucursal_id}")
 
-
-
-    # Buscar producto para modificar
-    if request.method == "POST" and "producto_id" in request.POST:
-        producto_id = request.POST.get("producto_id")
-        try:
-            producto = Producto.objects.get(id=producto_id, sucursal_id=sucursal_id)
-        except Producto.DoesNotExist:
-            producto = None  # No encontramos el producto
-
-    # Modificar producto
-    if request.method == 'POST' and 'modificar_producto' in request.POST and producto:
-        producto.nombre = request.POST['nuevo_nombre']
-        producto.precio = request.POST['nuevo_precio']
-        producto.save()
-        return redirect(f"{request.path}?sucursal={sucursal_id}")
-
     if request.GET.get('exportar', False):  
         sucursal_id = request.GET.get('sucursal')
     
@@ -160,3 +143,21 @@ def eliminar_productos(request):
         except Exception as e:
             # En caso de error, devolver el mensaje de error
             return JsonResponse({'success': False, 'error': str(e)})
+        
+def modificar_producto(request):
+    if request.method == 'POST':
+        producto_id = request.POST.get('id')
+        nombre = request.POST.get('nombre')
+        precio = request.POST.get('precio')
+
+        producto = get_object_or_404(Producto, id=producto_id)
+        
+        # Actualizar los campos del producto
+        producto.nombre = nombre
+        producto.precio = precio
+        producto.save()
+
+        # Redirigir a la página donde se muestra el inventario
+        return redirect('home')  # Puedes redirigir a cualquier vista que quieras después de modificar
+
+    return render(request, 'nombre_del_template.html')
