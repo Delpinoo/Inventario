@@ -17,21 +17,8 @@ body {
     text-align: center; /* Centra el texto */
 }
 
-
-
-
-
-
-
-
-
-/*clases para el container de la lista de productos*/
 .title-container{
     text-align: center;
-}
-.container-list{
-    background-color: burlywood;
-    
 }
 
 .container-list{
@@ -42,60 +29,18 @@ body {
     margin-top: 50px;
 }
 
-/*clases el container de los botones agregar, modificar y eliminar*/ 
+/*clase del container de los botones agregar y eliminar*/ 
 .container-buttoms{
     margin-left: 300px;
     margin-top: 20px;
 }
 
-.buttons {
-    background-color: blanchedalmond;
-    border-radius: 10px;
-}
-
-.buttons-formularios{
-    background-color: blanchedalmond;
-    border-radius: 10px;
-}
-
-
-/*clases para el container de los formularios (agregar y eliminar)*/
-.container-forms{
-    background-color: burlywood;
-    width: 400px;
-    height: 115px;
-    margin-left: 200px;
-    margin-top: 50px;
-    border-radius: 15px;
+.form-group{
+    margin-top: 5px;
 }
 
 .title-form{
     text-align: center;
-}
-.input-forms{
-    margin-left: 10px;
-}
-
-.buttons-forms{
-    margin-top: 5px;
-    margin-left: 10px;
-    background-color: blanchedalmond;
-    border-radius: 10px;
-}
-
-/*clase para el formulario modificar*/
-.search-producto {
-    background-color: burlywood;
-    width: 400px;
-    height: 230px;
-    margin-left: 200px;
-    margin-top: 50px;
-    border-radius: 15px;
-}
-
-.modify-form {
-    padding: 10px;
-    background-color: #f9f9f9;
 }
 
 .oculto {
