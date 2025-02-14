@@ -46,10 +46,30 @@ function eliminarProductos() {
         .then(data => {
             // Lógica de éxito
             console.log('Productos eliminados:', data);
+
+            // Eliminar los productos seleccionados del DOM
+            productosSeleccionados.forEach(producto => {
+                const productoElemento = producto.closest('tr');  // Suponiendo que cada producto está dentro de un <tr>
+                if (productoElemento) {
+                    productoElemento.remove();  // Elimina la fila correspondiente al producto
+                }
+            });
+
+            // Opcional: Actualizar el conteo de productos o realizar otras acciones de UI
+            actualizarConteoProductos();
         })
         .catch(error => {
             console.error('Error:', error);
         });
+    }
+}
+
+function actualizarConteoProductos() {
+    const productosRestantes = document.querySelectorAll('input[name="producto"]').length;
+    const contadorProductos = document.getElementById('contador-productos'); // Asumiendo que tienes un elemento con este ID para mostrar el conteo
+
+    if (contadorProductos) {
+        contadorProductos.textContent = `Productos restantes: ${productosRestantes}`;
     }
 }
 
