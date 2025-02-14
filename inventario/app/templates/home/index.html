@@ -16,19 +16,28 @@
     <h1 class="title-container">Inventario de productos</h1>
 
 <div class="tabla-productos">
-    <!-- Formulario para filtrar productos por sucursal -->
-    <form method="get" action="{% url 'home' %}" class="mb-3">
-        <label for="sucursal">Filtrar por Sucursal:</label>
-        <select name="sucursal" id="sucursal" class="form-select d-inline-block w-auto">
-            <option value="">Seleccione una sucursal</option>
-            {% for sucursal in sucursales %}
-                <option value="{{ sucursal.id }}" {% if request.GET.sucursal == sucursal.id|stringformat:"s" %}selected{% endif %}>
-                    {{ sucursal.nombre_sucursal }}
-                </option>
-            {% endfor %}
-        </select>
-        <button type="submit" class="btn btn-primary">Filtrar</button>
-    </form>
+    <div class="d-flex justify-content-between mb-3">
+        <!-- Formulario para filtrar productos por sucursal -->
+        <form method="get" action="{% url 'home' %}" class="d-inline-block">
+            <label for="sucursal">Filtrar por Sucursal:</label>
+            <select name="sucursal" id="sucursal" class="form-select d-inline-block w-auto">
+                <option value="">Seleccione una sucursal</option>
+                {% for sucursal in sucursales %}
+                    <option value="{{ sucursal.id }}" {% if request.GET.sucursal == sucursal.id|stringformat:"s" %}selected{% endif %}>
+                        {{ sucursal.nombre_sucursal }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+    
+        <div class="text-center">
+            <a href="{% url 'home' %}?exportar=true&sucursal={{ request.GET.sucursal }}" class="btn" style="background-color: #8fcf7e; border-color: #8fcf7e; color: white; display: flex; align-items: center; padding: 10px 15px;">
+                <img width="25" height="25" src="https://img.icons8.com/color/48/export-excel.png" alt="export-excel" class="mr-2"/>
+                Descargar Inventario
+            </a>
+        </div>
+    </div>
     <!-- Tabla de productos -->
     <table class="table table-striped">
         <thead>
@@ -37,6 +46,8 @@
                 <th>Nombre</th>
                 <th>Precio</th>
                 <th>Sucursal</th>
+                <th></th>
+                <th>Modificar</th>
             </tr>
         </thead>
         <tbody>
@@ -47,10 +58,13 @@
                     <td>{{ producto.nombre }}</td>
                     <td>${{ producto.precio }}</td>
                     <td>{{ producto.sucursal.nombre_sucursal }}</td>
-                </tr>
+                    <td>  <a onclick="mostrarModal('modificar')">
+                        <img width="30" height="30" src="https://img.icons8.com/cotton/128/edit--v2.png" alt="edit--v2"/></td>
+                    </a>                  
+                    </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4">Para ver los productos debe filtrar por sucursal.</td>
+                    <td colspan="6">Para ver los productos debe filtrar por sucursal.</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -62,15 +76,10 @@
             <i class="bi bi-plus-circle"> Agregar Producto</i>
         </button>
 
-
-        <button class="btn btn-warning" onclick="mostrarModal('modificar')">
-            <i class="bi bi-pencil-fill"> Modificar Producto</i>
-        </button>
         {% csrf_token %}
         <button id="eliminarProductosBtn" class="btn btn-danger" onclick="eliminarProductos()">
             <i class="bi bi-x-circle"> Eliminar Producto</i>
         </button>
-        <a class="btn btn-info" href="{% url 'home' %}?exportar=true&sucursal={{ request.GET.sucursal }}" ><i class=" bi bi-arrow-down-circle">Descargar Inventario</i></a>
     </div>
 
         <!-- Modal para Agregar Producto -->

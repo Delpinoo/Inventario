@@ -79,17 +79,6 @@ def home(request):
         producto.precio = request.POST['nuevo_precio']
         producto.save()
         return redirect(f"{request.path}?sucursal={sucursal_id}")
-        
-    #eliminar
-    if request.method == 'POST' and 'eliminar_producto' in request.POST:
-        formulario_activo = 'ninguno'
-        producto_id = request.POST['producto_id']
-        try:
-            producto = Producto.objects.filter(sucursal_id=sucursal_id).get(id=producto_id)
-            producto.delete() 
-        except Producto.DoesNotExist:
-            error = 'Producto no encontrado en esta sucursal'
-
 
     if request.GET.get('exportar', False):  
         sucursal_id = request.GET.get('sucursal')

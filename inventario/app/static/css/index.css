@@ -2,19 +2,6 @@ body {
     background-color: lightgrey;
 }
 
-/*
-.tabla-productos {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50%;
-    background-color: lightgray;
-    padding: 20px;
-}
-*/
-
-
 
 .tabla-productos{
     position: absolute;
@@ -57,7 +44,7 @@ body {
 
 /*clases el container de los botones agregar, modificar y eliminar*/ 
 .container-buttoms{
-    margin-left: 210px;
+    margin-left: 300px;
     margin-top: 20px;
 }
 
