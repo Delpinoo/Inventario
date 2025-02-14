@@ -6,8 +6,10 @@ from django.conf import settings
 from datetime import datetime
 from openpyxl.cell.cell import Cell
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_protect
 import openpyxl
 import os
+import json
 
 
 def escribir_valor(ws, fila, columna, valor):
@@ -149,3 +151,23 @@ def home(request):
         'error': error,
         'sucursales': sucursales,
     })
+
+
+
+def eliminar_productos(request):
+    if request.method == 'POST':
+        try:
+            # Obtener los IDs de los productos a eliminar desde el cuerpo de la solicitud
+            data = json.loads(request.body)
+            ids_producto = data.get('ids', [])
+            
+            # Lógica para eliminar los productos (aquí debes agregar tu lógica real)
+            for producto_id in ids_producto:
+                producto = Producto.objects.get(id=producto_id)
+                producto.delete()
+            
+            # Si todo va bien, devolver un mensaje de éxito
+            return JsonResponse({'success': True})
+        except Exception as e:
+            # En caso de error, devolver el mensaje de error
+            return JsonResponse({'success': False, 'error': str(e)})
