@@ -1,5 +1,5 @@
 from django import forms
-from .models import Producto
+from .models import Producto, Telefono
 
 class ProductoForm(forms.ModelForm):
     class Meta:
@@ -9,3 +9,8 @@ class ProductoForm(forms.ModelForm):
             'nombre' : forms.TextInput(attrs={'id': 'id_nombre', 'placeholder': 'Nombre del producto'}),
             'precio' : forms.NumberInput(attrs={'id': 'id_precio', 'placeholder': 'Precio del producto'}),
         }
+
+class TelefonoForm(forms.ModelForm):
+    class Meta:
+        model = Telefono
+        fields = ['nombre_dueño', 'modelo_telefono', 'fono', 'sucursal']
