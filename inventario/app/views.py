@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import ProductoForm
-from .models import Producto, Sucursal
+from .forms import ProductoForm, TelefonoForm
+from .models import Producto, Sucursal, Telefono
 from django.conf import settings
 from datetime import datetime
 from openpyxl.cell.cell import Cell
@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_protect
 import openpyxl
 import os
 import json
+
 
 
 def escribir_valor(ws, fila, columna, valor):
@@ -143,7 +144,8 @@ def eliminar_productos(request):
         except Exception as e:
             # En caso de error, devolver el mensaje de error
             return JsonResponse({'success': False, 'error': str(e)})
-        
+
+
 def modificar_producto(request):
     if request.method == 'POST':
         producto_id = request.POST.get('id')
@@ -160,4 +162,33 @@ def modificar_producto(request):
         # Redirigir a la página donde se muestra el inventario
         return redirect('home')  # Puedes redirigir a cualquier vista que quieras después de modificar
 
-    return render(request, 'nombre_del_template.html')
+    return render(request, 'home')
+
+
+def phones(request):
+    # Obtener todos los teléfonos
+    telefonos = Telefono.objects.all()
+
+    # Filtrar por sucursal si se ha seleccionado alguna
+    sucursal_id = request.GET.get('sucursal')
+    if sucursal_id:
+        telefonos = telefonos.filter(sucursal_id=sucursal_id)
+
+    # Agrupar los teléfonos por sucursal
+    telefonos_por_sucursal = {}
+    for telefono in telefonos:
+        sucursal = telefono.sucursal
+        if sucursal not in telefonos_por_sucursal:
+            telefonos_por_sucursal[sucursal] = []
+        telefonos_por_sucursal[sucursal].append(telefono)
+
+    # Obtener todas las sucursales para el filtro
+    sucursales = Sucursal.objects.all()
+
+    return render(request, 'phones/telefonos.html', {
+        'telefonos_por_sucursal': telefonos_por_sucursal,
+        'sucursales': sucursales,
+        'request': request
+    })
+
+#----------------------------------------------------------------------------------------------

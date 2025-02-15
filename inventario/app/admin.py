@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from django.contrib import admin
-from .models import Producto, Sucursal
+from .models import Producto, Sucursal,Tipo , Telefono
 
 class ProductoAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'precio', 'sucursal')  # Muestra las columnas en la lista
@@ -10,3 +10,5 @@ class ProductoAdmin(admin.ModelAdmin):
 
 admin.site.register(Producto)
 admin.site.register(Sucursal)
+admin.site.register(Tipo)
+admin.site.register(Telefono)

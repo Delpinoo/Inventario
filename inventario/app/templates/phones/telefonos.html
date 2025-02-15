@@ -1,0 +1,135 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="tabla-productos">
+    <div class="d-flex justify-content-between mb-3">
+        <!-- Formulario para filtrar productos por sucursal -->
+        <form method="get" action="{% url 'phones' %}" class="d-inline-block">
+            <label for="sucursal">Filtrar por Sucursal:</label>
+            <select name="sucursal" id="sucursal" class="form-select d-inline-block w-auto">
+                <option value="">Seleccione una sucursal</option>
+                {% for sucursal in sucursales %}
+                    <option value="{{ sucursal.id }}" {% if request.GET.sucursal == sucursal.id|stringformat:"s" %}selected{% endif %}>
+                        {{ sucursal.nombre_sucursal }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+    
+        <div class="text-center">
+            <a href="{% url 'phones' %}?exportar=true&sucursal={{ request.GET.sucursal }}" class="btn" style="background-color: #8fcf7e; border-color: #8fcf7e; color: white; display: flex; align-items: center; padding: 10px 15px;">
+                <img width="25" height="25" src="https://img.icons8.com/color/48/export-excel.png" alt="export-excel" class="mr-2"/>
+                Descargar Inventario
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla de teléfonos -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="check-all"> Seleccionar todo</th>
+                <th>Nombre del dueño</th>
+                <th>Modelo del teléfono</th>
+                <th>Fono</th>
+                <th>Sucursal</th>
+                <th>Modificar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sucursal, telefonos_sucursal in telefonos_por_sucursal.items %}
+                <!-- Título para la sucursal -->
+                <tr>
+                    <td colspan="6" style="font-weight: bold; background-color: #f1f1f1;">
+                        {{ sucursal.nombre_sucursal }}
+                    </td>
+                </tr>
+                
+                <!-- Mostrar los teléfonos de la sucursal -->
+                {% if telefonos_sucursal %}
+                    {% for telefono in telefonos_sucursal %}
+                        <tr>
+                            <td><input type="checkbox" name="telefono" value="{{ telefono.id }}"></td>
+                            <td>{{ telefono.nombre_dueño }}</td>
+                            <td>{{ telefono.modelo_telefono }}</td>
+                            <td>{{ telefono.fono }}</td>
+                            <td>{{ telefono.sucursal.nombre_sucursal }}</td>
+                            <td>
+                                <a href="javascript:void(0);" onclick="mostrarModal('modificar', '{{ telefono.id }}', '{{ telefono.nombre_dueño }}', '{{ telefono.modelo_telefono }}', '{{ telefono.fono }}', '{{ telefono.sucursal.id }}')">
+                                    <img width="30" height="30" src="https://img.icons8.com/cotton/128/edit--v2.png" alt="edit--v2"/>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <!-- Si no hay teléfonos en esta sucursal -->
+                    <tr>
+                        <td colspan="6">No hay teléfonos disponibles en esta sucursal.</td>
+                    </tr>
+                {% endif %}
+            {% empty %}
+                <!-- Si no hay sucursales -->
+                <tr>
+                    <td colspan="6">No hay sucursales disponibles.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+    
+
+    <div class="container-buttoms">
+        <!-- Botón para agregar teléfono -->
+        <button class="btn btn-success" onclick="mostrarModal('agregar')">
+            <i class="bi bi-plus-circle"> Agregar Teléfono</i>
+        </button>
+    
+        {% csrf_token %}
+        <button id="eliminarTelefonosBtn" class="btn btn-danger" onclick="eliminarTelefonos()">
+            <i class="bi bi-x-circle"> Eliminar Teléfonos</i>
+        </button>
+    </div>
+
+    <!-- Modal para agregar y modificar teléfono -->
+    <div class="modal fade" id="modalTelefono" tabindex="-1" aria-labelledby="modalTelefonoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTelefonoLabel">Agregar Teléfono</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formTelefono" method="POST" action="{% url 'phones' %}">
+                        {% csrf_token %}
+                        <input type="hidden" id="telefonoId" name="telefono_id">
+                        <div class="mb-3">
+                            <label for="nombre_dueño" class="form-label">Nombre del dueño</label>
+                            <input type="text" class="form-control" id="nombre_dueño" name="nombre_dueño" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="modelo_telefono" class="form-label">Modelo del teléfono</label>
+                            <input type="text" class="form-control" id="modelo_telefono" name="modelo_telefono" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fono" class="form-label">Fono</label>
+                            <input type="text" class="form-control" id="fono" name="fono" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sucursal" class="form-label">Sucursal</label>
+                            <select class="form-select" id="sucursal" name="sucursal" required>
+                                {% for sucursal in sucursales %}
+                                    <option value="{{ sucursal.id }}">{{ sucursal.nombre_sucursal }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
