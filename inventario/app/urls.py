@@ -7,4 +7,6 @@ urlpatterns = [
     path('modificar-producto/', views.modificar_producto, name='modificar_producto'),
     path('phones/', views.phones, name='phones'),
     path('modificar_telefono/<int:telefono_id>/', views.modificar_telefono, name='modificar_telefono'),
+    path('eliminar-telefonos/', views.eliminar_telefonos, name='eliminar_telefonos'),
+    path('eliminar_telefonos/', views.eliminar_telefonos, name='eliminar_telefonos')
 ]
