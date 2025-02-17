@@ -12,6 +12,19 @@ function abrirModalEditar(telefonoId, nombre, modelo, fono, sucursalId) {
     modal.show();
 }
 
+function openAddPhoneModal() {
+    // Limpiar los campos del formulario
+    document.getElementById("formTelefono").reset();
+
+    // Puedes cerrar cualquier posible mensaje de error en el formulario si existiera
+    // Limpiar los mensajes de error, si es que los hay
+    // document.querySelector(".error-message").textContent = "";
+
+    // Abrir el modal
+    const modal = new bootstrap.Modal(document.getElementById('modalTelefono'));
+    modal.show();
+}
+
 document.getElementById('formEditarTelefono').addEventListener('submit', function (event) {
     event.preventDefault();
     let telefonoId = document.getElementById('telefonoIdEditar').value;

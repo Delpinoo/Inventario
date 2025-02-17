@@ -167,10 +167,7 @@ def modificar_producto(request):
 #--------------------------------------------------------------------------------------------------------------------
 
 def phones(request):
-    # Obtener todos los teléfonos
-    telefonos = Telefono.objects.all()
-
-        # Si se envió un formulario con método POST, agregar un nuevo teléfono
+    # Si se envió un formulario con método POST, agregar un nuevo teléfono
     if request.method == "POST":
         nombre_dueño = request.POST.get("nombre_dueño")
         modelo_telefono = request.POST.get("modelo_telefono")
