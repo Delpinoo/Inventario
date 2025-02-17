@@ -18,10 +18,12 @@
         </form>
     
         <div class="text-center">
-            <a href="{% url 'phones' %}?exportar=true&sucursal={{ request.GET.sucursal }}" class="btn" style="background-color: #8fcf7e; border-color: #8fcf7e; color: white; display: flex; align-items: center; padding: 10px 15px;">
-                <img width="25" height="25" src="https://img.icons8.com/color/48/export-excel.png" alt="export-excel" class="mr-2"/>
-                Descargar Inventario
-            </a>
+            <a href="{% url 'phones' %}?exportar=true{% if request.GET.sucursal %}&sucursal={{ request.GET.sucursal }}{% endif %}" 
+            class="btn" 
+            style="background-color: #8fcf7e; border-color: #8fcf7e; color: white; display: flex; align-items: center; padding: 10px 15px;">
+            <img width="25" height="25" src="https://img.icons8.com/color/48/export-excel.png" alt="export-excel" class="mr-2"/>
+            Descargar Inventario
+        </a>
         </div>
     </div>
 

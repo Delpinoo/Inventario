@@ -7,6 +7,7 @@ from datetime import datetime
 from openpyxl.cell.cell import Cell
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from openpyxl import Workbook
 import openpyxl
 import os
 import json
@@ -165,6 +166,18 @@ def modificar_producto(request):
     return render(request, 'home')
 
 #--------------------------------------------------------------------------------------------------------------------
+def escribir_valor_en_celda(ws, fila, columna, valor):
+    cell = ws.cell(row=fila, column=columna)
+    if isinstance(cell, Cell) and not isinstance(cell, openpyxl.cell.cell.MergedCell):
+        cell.value = valor
+    else:
+        # Encontrar la celda principal de la fusión
+        for rango in ws.merged_cells.ranges:
+            if (cell.coordinate in rango):
+                superior_izquierda = rango.min_row, rango.min_col
+                ws.cell(row=superior_izquierda[0], column=superior_izquierda[1]).value = valor
+                break  
+
 
 def phones(request):
     # Si se envió un formulario con método POST, agregar un nuevo teléfono
@@ -204,11 +217,64 @@ def phones(request):
     # Obtener todas las sucursales para el filtro
     sucursales = Sucursal.objects.all()
 
+
+# Exportar Excel si se solicita
+    if request.GET.get('exportar') == 'true':
+        # Ruta de la plantilla
+        plantilla_path = os.path.join(settings.BASE_DIR, 'app', 'static', 'templates', 'Inventario_Telefonos.xlsx')
+
+        # Verificar si la plantilla existe
+        if not os.path.exists(plantilla_path):
+            return HttpResponse(f"Error: El archivo plantilla no se encuentra en la ruta {plantilla_path}", status=404)
+
+        # Cargar la plantilla de Excel
+        wb = openpyxl.load_workbook(plantilla_path)
+        ws = wb.active
+
+        # Escribir la fecha actual
+        fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        escribir_valor_en_celda(ws, 11, 12, fecha_actual)  # Escribir la fecha en la celda L11
+        ws['L11'] = fecha_actual
+
+        # Obtener los detalles de la sucursal
+        sucursal = Sucursal.objects.get(id=sucursal_id)
+        nombre_sucursal = sucursal.nombre_sucursal
+        direccion = sucursal.direccion
+        telefono = sucursal.telefono
+
+        # Escribir los detalles de la sucursal
+        escribir_valor_en_celda(ws, 38, 5, nombre_sucursal)  # Escribir nombre sucursal en E38
+        escribir_valor_en_celda(ws, 38, 8, direccion)  # Escribir dirección en H38
+        escribir_valor_en_celda(ws, 38, 11, telefono)  # Escribir teléfono en K38
+        escribir_valor_en_celda(ws, 14, 7, nombre_sucursal)
+        # Obtener los teléfonos para esta sucursal
+        telefonos = Telefono.objects.filter(sucursal=sucursal)
+
+        # Escribir los datos de los teléfonos en el rango de filas 14 a N
+        for row_num, telefono in enumerate(telefonos, start=14):
+            escribir_valor_en_celda(ws, row_num, 4, telefono.nombre_dueño)  # Columna C: Nombre Dueño
+            escribir_valor_en_celda(ws, row_num, 5, telefono.modelo_telefono)  # Columna D: Modelo
+            escribir_valor_en_celda(ws, row_num, 6, telefono.fono)  # Columna E: Fono 
+
+        # Generar la respuesta de descarga
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=inventario_actualizado.xlsx'
+        
+        # Guardar el archivo en la respuesta HTTP
+        wb.save(response)
+
+        print("Sucursal ID:", sucursal_id)
+        print("Ruta de plantilla:", plantilla_path)
+
+        return response
+
     return render(request, 'phones/telefonos.html', {
         'telefonos_por_sucursal': telefonos_por_sucursal,
         'sucursales': sucursales,
         'request': request
     })
+
+
 
 
 def modificar_telefono(request, telefono_id):
