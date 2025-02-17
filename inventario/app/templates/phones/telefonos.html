@@ -29,7 +29,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th><input type="checkbox" id="check-all"> Seleccionar todo</th>
+                <th><input type="checkbox" id="check-all" onclick="toggleCheckboxes()"> Seleccionar todo</th>
                 <th>Nombre del dueño</th>
                 <th>Modelo del teléfono</th>
                 <th>Fono</th>
@@ -50,7 +50,7 @@
                 {% if telefonos_sucursal %}
                     {% for telefono in telefonos_sucursal %}
                         <tr>
-                            <td><input type="checkbox" name="telefono" value="{{ telefono.id }}"></td>
+                            <td><input type="checkbox" class="telefono-checkbox" value="{{ telefono.id }}"></td>
                             <td>{{ telefono.nombre_dueño }}</td>
                             <td>{{ telefono.modelo_telefono }}</td>
                             <td>{{ telefono.fono }}</td>
