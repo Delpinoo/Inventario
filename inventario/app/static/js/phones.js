@@ -67,3 +67,14 @@ function eliminarTelefonos() {
         form.submit();
     }
 }
+
+function toggleCheckboxes() {
+    // Obtener el estado del checkbox "Seleccionar todo"
+    const checkAll = document.getElementById('check-all');
+    const checkboxes = document.querySelectorAll('.telefono-checkbox');
+
+    // Marcar o desmarcar todos los checkboxes según el estado de "Seleccionar todo"
+    checkboxes.forEach(function(checkbox) {
+        checkbox.checked = checkAll.checked;
+    });
+}
