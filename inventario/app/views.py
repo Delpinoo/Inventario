@@ -6,7 +6,7 @@ from django.conf import settings
 from datetime import datetime
 from openpyxl.cell.cell import Cell
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import openpyxl
 import os
 import json
@@ -229,3 +229,29 @@ def modificar_telefono(request, telefono_id):
             return redirect('phones')  # Redirigir a la vista principal
 
     return JsonResponse({'error': 'Solicitud inválida'}, status=400)
+
+@csrf_exempt
+def eliminar_telefonos(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            ids = data.get('ids', [])
+            if ids:
+                # Verificar que los IDs estén correctos
+                print(f'IDs recibidos para eliminación: {ids}')
+                
+                # Eliminar los teléfonos con los IDs recibidos
+                telefonos_a_eliminar = Telefono.objects.filter(id__in=ids)
+                
+                # Verificar si se encontraron teléfonos para eliminar
+                if telefonos_a_eliminar.exists():
+                    telefonos_a_eliminar.delete()
+                    return JsonResponse({'success': True})
+                else:
+                    return JsonResponse({'success': False, 'message': 'No se encontraron teléfonos con esos IDs'})
+            else:
+                return JsonResponse({'success': False, 'message': 'No se proporcionaron IDs'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': f'Error: {str(e)}'})
+
+    return JsonResponse({'success': False, 'message': 'Método de solicitud no permitido'}, status=400)

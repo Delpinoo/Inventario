@@ -29,7 +29,7 @@
     <table class="table table-striped">
         <thead>
             <tr>
-                <th><input type="checkbox" id="check-all" onclick="toggleCheckboxes()"> Seleccionar todo</th>
+                <th><input type="checkbox" id="check-all" onclick="seleccionar_todos()"> Seleccionar todo</th>
                 <th>Nombre del dueño</th>
                 <th>Modelo del teléfono</th>
                 <th>Fono</th>
@@ -86,7 +86,7 @@
         </button>
     
         {% csrf_token %}
-        <button id="eliminarTelefonosBtn" class="btn btn-danger" onclick="eliminarTelefonos()">
+        <button type="button" class="btn btn-danger" onclick="eliminar_telefono()">
             <i class="bi bi-x-circle"> Eliminar Teléfonos</i>
         </button>
     </div>

@@ -33,39 +33,46 @@ document.getElementById('formEditarTelefono').addEventListener('submit', functio
 });
 
 // Función para eliminar un teléfono
-function eliminarTelefono(id) {
-    if (confirm("¿Estás seguro de que deseas eliminar este teléfono?")) {
-        window.location.href = "{% url 'delete_phone' 'id' %}".replace('id', id);
-    }
-}
+
 
 // Función para eliminar varios teléfonos
-function eliminarTelefonos() {
-    var selected = [];
-    document.querySelectorAll("input[name='telefono']:checked").forEach(function(checkbox) {
-        selected.push(checkbox.value);
+function eliminar_telefono() {
+    // Obtener los checkboxes seleccionados
+    const checkboxes = document.querySelectorAll('.telefono-checkbox:checked');
+    const idsSeleccionados = [];
+
+    checkboxes.forEach((checkbox) => {
+        idsSeleccionados.push(checkbox.value);
     });
 
-    if (selected.length === 0) {
-        alert("Por favor, selecciona al menos un teléfono para eliminar.");
+    if (idsSeleccionados.length === 0) {
+        alert('Por favor, selecciona al menos un teléfono.');
         return;
     }
 
-    if (confirm("¿Estás seguro de que deseas eliminar los teléfonos seleccionados?")) {
-        var url = "{% url 'delete_multiple_phones' %}";
-        var form = document.createElement('form');
-        form.method = 'POST';
-        form.action = url;
-
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'telefonos';
-        input.value = JSON.stringify(selected);
-        form.appendChild(input);
-        form.appendChild(document.createElement('input')).setAttribute('name', 'csrfmiddlewaretoken').value = '{{ csrf_token }}';
-        document.body.appendChild(form);
-        form.submit();
-    }
+    // Enviar la solicitud AJAX al backend
+    fetch('/eliminar_telefonos/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Obtener CSRF token si es necesario
+        },
+        body: JSON.stringify({ ids: idsSeleccionados })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Respuesta del servidor:', data);
+        if (data.success) {
+            alert('Los teléfonos seleccionados han sido eliminados');
+            location.reload();  // Recargar la página para ver los cambios
+        } else {
+            alert('No se pudo eliminar el teléfono. ' + (data.message || ''));
+        }
+    })
+    .catch(error => {
+        console.error('Error al eliminar teléfonos:', error);
+        alert('Ocurrió un error al intentar eliminar los teléfonos.');
+    });
 }
 
 function toggleCheckboxes() {
@@ -75,6 +82,30 @@ function toggleCheckboxes() {
 
     // Marcar o desmarcar todos los checkboxes según el estado de "Seleccionar todo"
     checkboxes.forEach(function(checkbox) {
+        checkbox.checked = checkAll.checked;
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function seleccionar_todos() {
+    const checkboxes = document.querySelectorAll('.telefono-checkbox');
+    const checkAll = document.getElementById('check-all');
+    
+    checkboxes.forEach((checkbox) => {
         checkbox.checked = checkAll.checked;
     });
 }
