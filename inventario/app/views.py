@@ -169,6 +169,27 @@ def phones(request):
     # Obtener todos los teléfonos
     telefonos = Telefono.objects.all()
 
+        # Si se envió un formulario con método POST, agregar un nuevo teléfono
+    if request.method == "POST":
+        nombre_dueño = request.POST.get("nombre_dueño")
+        modelo_telefono = request.POST.get("modelo_telefono")
+        fono = request.POST.get("fono")
+        sucursal_id = request.POST.get("sucursal")
+
+        # Validar que los datos no estén vacíos
+        if nombre_dueño and modelo_telefono and fono and sucursal_id:
+            sucursal = Sucursal.objects.get(id=sucursal_id)
+            Telefono.objects.create(
+                nombre_dueño=nombre_dueño,
+                modelo_telefono=modelo_telefono,
+                fono=fono,
+                sucursal=sucursal
+            )
+        return redirect("phones")  # Redirigir para evitar reenvío del formulario
+
+    # Obtener todos los teléfonos
+    telefonos = Telefono.objects.all()
+
     # Filtrar por sucursal si se ha seleccionado alguna
     sucursal_id = request.GET.get('sucursal')
     if sucursal_id:

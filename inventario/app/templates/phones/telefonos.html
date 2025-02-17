@@ -91,44 +91,44 @@
         </button>
     </div>
 
-    <!-- Modal para agregar y modificar teléfono -->
-    <div class="modal fade" id="modalTelefono" tabindex="-1" aria-labelledby="modalTelefonoLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTelefonoLabel">Agregar Teléfono</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formTelefono" method="POST" action="{% url 'phones' %}">
-                        {% csrf_token %}
-                        <input type="hidden" id="telefonoId" name="telefono_id">
-                        <div class="mb-3">
-                            <label for="nombre_dueño" class="form-label">Nombre del dueño</label>
-                            <input type="text" class="form-control" id="nombre_dueño" name="nombre_dueño" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="modelo_telefono" class="form-label">Modelo del teléfono</label>
-                            <input type="text" class="form-control" id="modelo_telefono" name="modelo_telefono" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="fono" class="form-label">Fono</label>
-                            <input type="text" class="form-control" id="fono" name="fono" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="sucursal" class="form-label">Sucursal</label>
-                            <select class="form-select" id="sucursal" name="sucursal" required>
-                                {% for sucursal in sucursales %}
-                                    <option value="{{ sucursal.id }}">{{ sucursal.nombre_sucursal }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
+    <!-- Modal para agregar teléfono -->
+<div class="modal fade" id="modalTelefono" tabindex="-1" aria-labelledby="modalTelefonoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTelefonoLabel">Agregar Teléfono</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formTelefono" method="POST" action="{% url 'phones' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="nombre_dueño" class="form-label">Nombre del dueño</label>
+                        <input type="text" class="form-control" id="nombre_dueño" name="nombre_dueño" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelo_telefono" class="form-label">Modelo del teléfono</label>
+                        <input type="text" class="form-control" id="modelo_telefono" name="modelo_telefono" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fono" class="form-label">Fono</label>
+                        <input type="text" class="form-control" id="fono" name="fono" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sucursal" class="form-label">Sucursal</label>
+                        <select class="form-select" id="sucursal" name="sucursal" required>
+                            {% for sucursal in sucursales %}
+                                <option value="{{ sucursal.id }}">{{ sucursal.nombre_sucursal }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar Teléfono</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
 
 </div>
 
