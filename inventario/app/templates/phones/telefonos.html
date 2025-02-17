@@ -56,7 +56,7 @@
                             <td>{{ telefono.fono }}</td>
                             <td>{{ telefono.sucursal.nombre_sucursal }}</td>
                             <td>
-                                <a href="javascript:void(0);" onclick="mostrarModal('modificar', '{{ telefono.id }}', '{{ telefono.nombre_dueño }}', '{{ telefono.modelo_telefono }}', '{{ telefono.fono }}', '{{ telefono.sucursal.id }}')">
+                                <a href="javascript:void(0);" onclick="abrirModalEditar('{{ telefono.id }}', '{{ telefono.nombre_dueño }}', '{{ telefono.modelo_telefono }}', '{{ telefono.fono }}', '{{ telefono.sucursal.id }}')">
                                     <img width="30" height="30" src="https://img.icons8.com/cotton/128/edit--v2.png" alt="edit--v2"/>
                                 </a>
                             </td>
@@ -129,6 +129,44 @@
     </div>
 </div>
 
+<!-- Modal para modificar teléfono -->
+<div class="modal fade" id="modalEditarTelefono" tabindex="-1" aria-labelledby="modalEditarTelefonoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarTelefonoLabel">Modificar Teléfono</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarTelefono" method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" id="telefonoIdEditar" name="telefono_id">
+                    <div class="mb-3">
+                        <label for="nombre_dueño_editar" class="form-label">Nombre del dueño</label>
+                        <input type="text" class="form-control" id="nombre_dueño_editar" name="nombre_dueño" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="modelo_telefono_editar" class="form-label">Modelo del teléfono</label>
+                        <input type="text" class="form-control" id="modelo_telefono_editar" name="modelo_telefono" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fono_editar" class="form-label">Fono</label>
+                        <input type="text" class="form-control" id="fono_editar" name="fono" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sucursal_editar" class="form-label">Sucursal</label>
+                        <select class="form-select" id="sucursal_editar" name="sucursal" required>
+                            {% for sucursal in sucursales %}
+                                <option value="{{ sucursal.id }}">{{ sucursal.nombre_sucursal }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </div>
 
