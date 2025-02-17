@@ -164,6 +164,7 @@ def modificar_producto(request):
 
     return render(request, 'home')
 
+#--------------------------------------------------------------------------------------------------------------------
 
 def phones(request):
     # Obtener todos los teléfonos
@@ -212,4 +213,22 @@ def phones(request):
         'request': request
     })
 
-#----------------------------------------------------------------------------------------------
+
+def modificar_telefono(request, telefono_id):
+    telefono = get_object_or_404(Telefono, id=telefono_id)
+
+    if request.method == 'POST':
+        nombre_dueño = request.POST.get('nombre_dueño')
+        modelo_telefono = request.POST.get('modelo_telefono')
+        fono = request.POST.get('fono')
+        sucursal_id = request.POST.get('sucursal')
+
+        if nombre_dueño and modelo_telefono and fono and sucursal_id:
+            telefono.nombre_dueño = nombre_dueño
+            telefono.modelo_telefono = modelo_telefono
+            telefono.fono = fono
+            telefono.sucursal_id = sucursal_id
+            telefono.save()
+            return redirect('phones')  # Redirigir a la vista principal
+
+    return JsonResponse({'error': 'Solicitud inválida'}, status=400)

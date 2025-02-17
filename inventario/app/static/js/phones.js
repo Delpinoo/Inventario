@@ -1,18 +1,23 @@
-function mostrarModal(accion, id, nombre_dueño = '', modelo_telefono = '', fono = '', sucursal_id = '') {
-    if (accion === 'modificar') {
-        document.getElementById('modalTelefonoLabel').textContent = 'Modificar Teléfono';
-        document.getElementById('telefonoId').value = id;
-        document.getElementById('nombre_dueño').value = nombre_dueño;
-        document.getElementById('modelo_telefono').value = modelo_telefono;
-        document.getElementById('fono').value = fono;
-        document.getElementById('sucursal').value = sucursal_id;
-    } else {
-        document.getElementById('modalTelefonoLabel').textContent = 'Agregar Teléfono';
-        document.getElementById('formTelefono').reset();
-    }
-    var myModal = new bootstrap.Modal(document.getElementById('modalTelefono'));
-    myModal.show();
+function abrirModalEditar(telefonoId, nombre, modelo, fono, sucursalId) {
+    document.getElementById('telefonoIdEditar').value = telefonoId;
+    document.getElementById('nombre_dueño_editar').value = nombre;
+    document.getElementById('modelo_telefono_editar').value = modelo;
+    document.getElementById('fono_editar').value = fono;
+    document.getElementById('sucursal_editar').value = sucursalId;
+
+    // Cambiar dinámicamente la acción del formulario
+    document.getElementById('formEditarTelefono').action = `/modificar_telefono/${telefonoId}/`;
+
+    let modal = new bootstrap.Modal(document.getElementById('modalEditarTelefono'));
+    modal.show();
 }
+
+document.getElementById('formEditarTelefono').addEventListener('submit', function (event) {
+    event.preventDefault();
+    let telefonoId = document.getElementById('telefonoIdEditar').value;
+    this.action = `/modificar_telefono/${telefonoId}/`;
+    this.submit();
+});
 
 // Función para eliminar un teléfono
 function eliminarTelefono(id) {
