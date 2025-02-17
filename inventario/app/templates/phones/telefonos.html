@@ -81,7 +81,7 @@
 
     <div class="container-buttoms">
         <!-- Botón para agregar teléfono -->
-        <button class="btn btn-success" onclick="mostrarModal('agregar')">
+        <button class="btn btn-success" onclick="openAddPhoneModal()">
             <i class="bi bi-plus-circle"> Agregar Teléfono</i>
         </button>
     
@@ -91,13 +91,13 @@
         </button>
     </div>
 
-    <!-- Modal para agregar teléfono -->
+<!-- Modal para agregar teléfono -->
 <div class="modal fade" id="modalTelefono" tabindex="-1" aria-labelledby="modalTelefonoLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalTelefonoLabel">Agregar Teléfono</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form id="formTelefono" method="POST" action="{% url 'phones' %}">
@@ -122,7 +122,7 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Agregar Teléfono</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </form>
             </div>
         </div>
