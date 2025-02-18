@@ -1,50 +1,54 @@
-
-function mostrarModal(tipo, id, nombre, precio, sucursal) {
-    console.log('Tipo:', tipo);
+function mostrarModal(tipo, id, nombre, precio, cantidad, tipoProducto, sucursal) {
+    console.log('Tipo:', tipo);  // Debe ser 'modificar' o 'agregar'
     console.log('ID:', id);
     console.log('Nombre:', nombre);
     console.log('Precio:', precio);
+    console.log('Cantidad:', cantidad);
+    console.log('Tipo Producto:', tipoProducto); // Aquí debe mostrarse 'Electrónica'
     console.log('Sucursal:', sucursal);
     
-    // Ahora puedes usar estos valores para llenar el formulario en tu modal.
     if (tipo === 'modificar') {
-        // Supongamos que el modal tiene campos con id #nombre, #precio, y #sucursal.
+        document.querySelector('#producto-id').value = id;
         document.querySelector('#nombre').value = nombre;
         document.querySelector('#precio').value = precio;
-        document.querySelector('#producto-id').value = id; 
+        document.querySelector('#cantidad').value = cantidad;
+        document.querySelector('#tipo').value = tipoProducto;  // ✅ Corregido
+        document.querySelector('#sucursal').value = sucursal;  
+
+        // Verificar si la opción de sucursal existe, si no, agregarla
+        let sucursalSelect = document.querySelector('#sucursal');
+        let optionExists = false;
+
+        for (let option of sucursalSelect.options) {
+            if (option.value === sucursal) {
+                optionExists = true;
+                break;
+            }
+        }
+
+        if (!optionExists) {
+            let newOption = new Option(sucursal, sucursal);
+            sucursalSelect.add(newOption);
+        }
         
-        // Aquí puedes abrir el modal.
+        sucursalSelect.value = sucursal;
+
         const modal = new bootstrap.Modal(document.querySelector('#modal-modificar'));
         modal.show();
     }
-    
+
     if (tipo === 'agregar') {
-        // Supongamos que el modal tiene campos con id #nombre, #precio, y #sucursal.
-        document.querySelector('#nombre').value = nombre;
-        document.querySelector('#precio').value = precio;
+        document.querySelector('#nombre').value = '';
+        document.querySelector('#precio').value = '';
+        document.querySelector('#cantidad').value = '';
+        document.querySelector('#tipo').value = '';
         document.querySelector('#sucursal').value = sucursal;
 
-        
-        // Aquí puedes abrir el modal.
         const modal = new bootstrap.Modal(document.querySelector('#modal-agregar'));
         modal.show();
     }
-
 }
 
-
-/*
-function mostrarModal(id, nombre, precio, sucursal) {
-    // Rellenar los campos del modal con la información del producto
-    document.getElementById('nombre').value = nombre;
-    document.getElementById('precio').value = precio;
-    document.getElementById('sucursal').value = sucursal;
-
-    // Mostrar el modal
-    var modal = new bootstrap.Modal(document.getElementById('modalModificar'));
-    modal.show();
-}
-*/
 
 function eliminarProductos() {
     const productosSeleccionados = document.querySelectorAll('input[name="producto"]:checked');

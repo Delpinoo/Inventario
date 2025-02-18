@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import ProductoForm, TelefonoForm
-from .models import Producto, Sucursal, Telefono
+from .models import Producto, Sucursal, Telefono, Tipo
 from django.conf import settings
 from datetime import datetime
 from openpyxl.cell.cell import Cell
@@ -152,18 +152,31 @@ def modificar_producto(request):
         producto_id = request.POST.get('id')
         nombre = request.POST.get('nombre')
         precio = request.POST.get('precio')
+        cantidad = request.POST.get('cantidad')
+        tipo_nombre = request.POST.get('tipo')  # Aquí se recoge el nombre del tipo
+        sucursal = request.POST.get('sucursal')
 
         producto = get_object_or_404(Producto, id=producto_id)
-        
+        tipo = get_object_or_404(Tipo, nombre=tipo_nombre)  # Buscar el tipo por nombre
+        sucursal = get_object_or_404(Sucursal, nombre_sucursal=sucursal)
+
         # Actualizar los campos del producto
         producto.nombre = nombre
         producto.precio = precio
+        producto.cantidad = cantidad
+        producto.tipo = tipo  # Asignamos la instancia de Tipo encontrada
+        producto.sucursal = sucursal
         producto.save()
 
-        # Redirigir a la página donde se muestra el inventario
-        return redirect('home')  # Puedes redirigir a cualquier vista que quieras después de modificar
-
-    return render(request, 'home')
+        return redirect('home')  # O redirigir a donde desees
+    
+    # Si es GET o algo más, cargar el formulario
+    tipos = Tipo.objects.all()  # Obtener la lista de tipos para el formulario
+    sucursales = Sucursal.objects.all()  # Lista de sucursales para el formulario
+    
+    return render(request, 'phones/telefonos.html', {
+        "tipos": tipos, 
+        "sucursales": sucursales})
 
 #--------------------------------------------------------------------------------------------------------------------
 def escribir_valor_en_celda(ws, fila, columna, valor):
@@ -218,7 +231,7 @@ def phones(request):
     sucursales = Sucursal.objects.all()
 
 
-# Exportar Excel si se solicita
+    # Exportar Excel si se solicita
     if request.GET.get('exportar') == 'true':
         # Ruta de la plantilla
         plantilla_path = os.path.join(settings.BASE_DIR, 'app', 'static', 'templates', 'Inventario_Telefonos.xlsx')
