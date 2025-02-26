@@ -1,0 +1,115 @@
+
+/* Fondo con degradado */
+body {
+    display: flex;
+    align-items: flex-start; /* Alinea el contenido hacia la parte superior */
+    justify-content: center; /* Centra el contenido horizontalmente */
+    height: 100vh;
+    background: linear-gradient(135deg, rgba(0, 100, 0, 0.9), rgba(0, 128, 0, 1)); /* Gradiente verde más oscuro */
+}
+
+
+/* Estilos de la tarjeta */
+.login-card {
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(10px);
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    padding: 50px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Imagen de perfil */
+.profile-img {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+/* Inputs con iconos */
+.input-group {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid white;
+    margin-bottom: 15px;
+}
+
+.input-group input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+.input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Botones */
+.btn-custom {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    border: none;
+}
+
+.btn-login {
+    background-color: white;
+    color: black;
+}
+
+.btn-register {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    margin-top: 10px;
+}
+
+/* Olvidé mi contraseña */
+.forgot-password {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    color: white;
+}
+
+#alert-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    z-index: 1000;
+}
+
+.alert {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    margin: 5px 0;
+    border-radius: 5px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.alert.success { background-color: #28a745; }
+.alert.error { background-color: #dc3545; }
+
+.alert.fade-out {
+    opacity: 0;
+}
+

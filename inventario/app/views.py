@@ -8,6 +8,9 @@ from openpyxl.cell.cell import Cell
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from openpyxl import Workbook
+from django.contrib.auth import authenticate, login as auth_login, get_user_model , logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 import openpyxl
 import os
 import json
@@ -27,6 +30,7 @@ def escribir_valor(ws, fila, columna, valor):
                 break 
             
 
+@login_required(login_url='login')
 def home(request):
     productos = Producto.objects.none()
     form_agregar = ProductoForm()
@@ -37,12 +41,19 @@ def home(request):
     error = None
     sucursales = Sucursal.objects.all()
 
-    sucursal_id = request.GET.get('sucursal', None)  # Si no hay 'sucursal', será None
-    # Si no hay sucursal seleccionada, mostrar todos los productos
+    sucursal_id = request.GET.get('sucursal')
+    tipo_id = request.GET.get('tipo')
+
+    productos = Producto.objects.all()
+
     if sucursal_id:
-        productos = Producto.objects.filter(sucursal_id=sucursal_id)
-    else:
-        productos = Producto.objects.all()  # Mostrar todos los productos si no hay filtro de sucursal
+        productos = productos.filter(sucursal_id=sucursal_id)
+    
+    if tipo_id:
+        productos = productos.filter(tipo_id=tipo_id)
+
+    sucursales = Sucursal.objects.all()
+    tipos = Tipo.objects.all()  # Asegúrate de importar tu modelo de tipos
 
 
 
@@ -52,18 +63,16 @@ def home(request):
         form_agregar = ProductoForm(request.POST)
         if form_agregar.is_valid():
             producto = form_agregar.save(commit=False)
-            producto.sucursal_id = sucursal_id  # Asignar la sucursal filtrada al producto
-            producto.save()
-            return redirect(f"{request.path}?sucursal={sucursal_id}")
+            
+            # Si no hay sucursal seleccionada, no asignar una sucursal
+            sucursal_id = request.GET.get('sucursal', None)  # Intenta obtener el parámetro de sucursal
+            if sucursal_id:
+                producto.sucursal_id = sucursal_id  # Asignar sucursal solo si existe en el filtro
 
-    if request.method == 'POST' and 'agregar_producto' in request.POST:
-            formulario_activo = 'agregar'
-            form_agregar = ProductoForm(request.POST)
-            if form_agregar.is_valid():
-                producto = form_agregar.save(commit=False)
-                producto.sucursal_id = sucursal_id
-                producto.save()
-                return redirect(f"{request.path}?sucursal={sucursal_id}")
+            producto.save()
+            return redirect('home')  # Redirigir al home, o a donde prefieras
+    else:
+        form_agregar = ProductoForm()
 
     if request.GET.get('exportar', False):  
         sucursal_id = request.GET.get('sucursal')
@@ -96,18 +105,18 @@ def home(request):
         telefono = sucursal.telefono
 
 
-        escribir_valor(ws, 38, 5, nombre_sucursal)
-        escribir_valor(ws, 38, 8, direccion)
-        escribir_valor(ws, 38, 11, telefono)
+        escribir_valor(ws, 16, 5, nombre_sucursal)
+        escribir_valor(ws, 16, 8, direccion)
+        escribir_valor(ws, 16, 11, telefono)
         
         productos = Producto.objects.filter(sucursal=sucursal)
 
         total = sum(producto.precio for producto in productos)      
-        for row_num, producto in enumerate(productos, start=14):
+        for row_num, producto in enumerate(productos, start=24):
             escribir_valor(ws, row_num, 4, producto.nombre)  
             escribir_valor(ws, row_num, 5, f"${producto.precio}")  
 
-        escribir_valor(ws, 14, 6, f"${total}")
+        escribir_valor(ws, 24, 6, f"${total}")
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename=inventario_actualizado.xlsx'
         wb.save(response)
@@ -124,6 +133,7 @@ def home(request):
         'formulario_activo': formulario_activo,
         'error': error,
         'sucursales': sucursales,
+        'tipos': tipos,
     })
 
 
@@ -151,6 +161,7 @@ def modificar_producto(request):
     if request.method == 'POST':
         producto_id = request.POST.get('id')
         nombre = request.POST.get('nombre')
+        numero_serie = request.POST.get('numero_serie')
         precio = request.POST.get('precio')
         cantidad = request.POST.get('cantidad')
         tipo_nombre = request.POST.get('tipo')  # Aquí se recoge el nombre del tipo
@@ -162,6 +173,7 @@ def modificar_producto(request):
 
         # Actualizar los campos del producto
         producto.nombre = nombre
+        producto.numero_serie = numero_serie
         producto.precio = precio
         producto.cantidad = cantidad
         producto.tipo = tipo  # Asignamos la instancia de Tipo encontrada
@@ -191,7 +203,7 @@ def escribir_valor_en_celda(ws, fila, columna, valor):
                 ws.cell(row=superior_izquierda[0], column=superior_izquierda[1]).value = valor
                 break  
 
-
+@login_required(login_url='login')
 def phones(request):
     # Si se envió un formulario con método POST, agregar un nuevo teléfono
     if request.method == "POST":
@@ -334,3 +346,39 @@ def eliminar_telefonos(request):
             return JsonResponse({'success': False, 'message': f'Error: {str(e)}'})
 
     return JsonResponse({'success': False, 'message': 'Método de solicitud no permitido'}, status=400)
+
+
+User = get_user_model()
+
+def login_function(request):  
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "").strip()
+
+        if not email or not password:
+            messages.error(request, "Debes ingresar un correo y una contraseña.")
+            return redirect("login")
+
+        # Verificar si el usuario existe
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, "No se encontró un usuario con ese correo.")
+            return redirect("login")
+
+        # Autenticar usando el email
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, "Inicio de sesión exitoso.")
+            return redirect("home")
+        else:
+            messages.error(request, "Correo o contraseña incorrectos.")
+            return redirect("login")
+
+    return render(request, "login/login.html") 
+
+def logout_function(request):
+    logout(request)
+    return redirect("login")  # Redirige a la página de login

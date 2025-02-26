@@ -16,7 +16,9 @@
 </head>
 <body>
     <h1 class="title-container">Inventario de productos</h1>
-    
+    <div class="d-flex justify-content-start" style="margin-left: 20px;">
+        <a href="{% url 'logout' %}" class="btn btn-danger"></i> <img width="30" height="30" src="static/image/logout.png" alt="list--v1"> Cerrar sesión</a>
+    </div>
     {% block content %}
     <!-- Aquí se insertará el contenido específico de cada página -->
     {% endblock %}
