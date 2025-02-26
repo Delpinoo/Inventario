@@ -120,7 +120,17 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR / 'app' /'static' ]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+AUTHENTICATION_BACKENDS = [
+    "app.auth_backends.EmailBackend",  # Usa email para autenticar
+    "django.contrib.auth.backends.ModelBackend",  # Mantiene el backend por defecto
+]
+
+AUTH_USER_MODEL = "app.User"
