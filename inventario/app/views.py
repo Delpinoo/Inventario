@@ -22,7 +22,7 @@ def escribir_valor(ws, fila, columna, valor):
     if isinstance(cell, Cell) and not isinstance(cell, openpyxl.cell.cell.MergedCell):
         cell.value = valor
     else:
-        # Encontrar la celda principal de la fusión
+        #en esta parte se encuntra la celda principal cuando estan fucionadas
         for rango in ws.merged_cells.ranges:
             if (cell.coordinate in rango):
                 superior_izquierda = rango.min_row, rango.min_col
@@ -53,7 +53,7 @@ def home(request):
         productos = productos.filter(tipo_id=tipo_id)
 
     sucursales = Sucursal.objects.all()
-    tipos = Tipo.objects.all()  # Asegúrate de importar tu modelo de tipos
+    tipos = Tipo.objects.all() 
 
 
 
@@ -64,13 +64,13 @@ def home(request):
         if form_agregar.is_valid():
             producto = form_agregar.save(commit=False)
             
-            # Si no hay sucursal seleccionada, no asignar una sucursal
-            sucursal_id = request.GET.get('sucursal', None)  # Intenta obtener el parámetro de sucursal
+            
+            sucursal_id = request.GET.get('sucursal', None)  
             if sucursal_id:
-                producto.sucursal_id = sucursal_id  # Asignar sucursal solo si existe en el filtro
+                producto.sucursal_id = sucursal_id  
 
             producto.save()
-            return redirect('home')  # Redirigir al home, o a donde prefieras
+            return redirect('home')
     else:
         form_agregar = ProductoForm()
 
@@ -141,19 +141,19 @@ def home(request):
 def eliminar_productos(request):
     if request.method == 'POST':
         try:
-            # Obtener los IDs de los productos a eliminar desde el cuerpo de la solicitud
+            
             data = json.loads(request.body)
             ids_producto = data.get('ids', [])
             
-            # Lógica para eliminar los productos (aquí debes agregar tu lógica real)
+            
             for producto_id in ids_producto:
                 producto = Producto.objects.get(id=producto_id)
                 producto.delete()
             
-            # Si todo va bien, devolver un mensaje de éxito
+            
             return JsonResponse({'success': True})
         except Exception as e:
-            # En caso de error, devolver el mensaje de error
+            
             return JsonResponse({'success': False, 'error': str(e)})
 
 
@@ -164,11 +164,11 @@ def modificar_producto(request):
         numero_serie = request.POST.get('numero_serie')
         precio = request.POST.get('precio')
         cantidad = request.POST.get('cantidad')
-        tipo_nombre = request.POST.get('tipo')  # Aquí se recoge el nombre del tipo
+        tipo_nombre = request.POST.get('tipo')  
         sucursal = request.POST.get('sucursal')
 
         producto = get_object_or_404(Producto, id=producto_id)
-        tipo = get_object_or_404(Tipo, nombre=tipo_nombre)  # Buscar el tipo por nombre
+        tipo = get_object_or_404(Tipo, nombre=tipo_nombre)  
         sucursal = get_object_or_404(Sucursal, nombre_sucursal=sucursal)
 
         # Actualizar los campos del producto
@@ -176,15 +176,15 @@ def modificar_producto(request):
         producto.numero_serie = numero_serie
         producto.precio = precio
         producto.cantidad = cantidad
-        producto.tipo = tipo  # Asignamos la instancia de Tipo encontrada
+        producto.tipo = tipo  
         producto.sucursal = sucursal
         producto.save()
 
-        return redirect('home')  # O redirigir a donde desees
+        return redirect('home')  
     
-    # Si es GET o algo más, cargar el formulario
-    tipos = Tipo.objects.all()  # Obtener la lista de tipos para el formulario
-    sucursales = Sucursal.objects.all()  # Lista de sucursales para el formulario
+    
+    tipos = Tipo.objects.all()  
+    sucursales = Sucursal.objects.all()  
     
     return render(request, 'phones/telefonos.html', {
         "tipos": tipos, 
@@ -196,7 +196,7 @@ def escribir_valor_en_celda(ws, fila, columna, valor):
     if isinstance(cell, Cell) and not isinstance(cell, openpyxl.cell.cell.MergedCell):
         cell.value = valor
     else:
-        # Encontrar la celda principal de la fusión
+        
         for rango in ws.merged_cells.ranges:
             if (cell.coordinate in rango):
                 superior_izquierda = rango.min_row, rango.min_col
@@ -205,14 +205,14 @@ def escribir_valor_en_celda(ws, fila, columna, valor):
 
 @login_required(login_url='login')
 def phones(request):
-    # Si se envió un formulario con método POST, agregar un nuevo teléfono
+    
     if request.method == "POST":
         nombre_dueño = request.POST.get("nombre_dueño")
         modelo_telefono = request.POST.get("modelo_telefono")
         fono = request.POST.get("fono")
         sucursal_id = request.POST.get("sucursal")
 
-        # Validar que los datos no estén vacíos
+        
         if nombre_dueño and modelo_telefono and fono and sucursal_id:
             sucursal = Sucursal.objects.get(id=sucursal_id)
             Telefono.objects.create(
@@ -221,17 +221,17 @@ def phones(request):
                 fono=fono,
                 sucursal=sucursal
             )
-        return redirect("phones")  # Redirigir para evitar reenvío del formulario
+        return redirect("phones")  
 
-    # Obtener todos los teléfonos
+    
     telefonos = Telefono.objects.all()
 
-    # Filtrar por sucursal si se ha seleccionado alguna
+    
     sucursal_id = request.GET.get('sucursal')
     if sucursal_id:
         telefonos = telefonos.filter(sucursal_id=sucursal_id)
 
-    # Agrupar los teléfonos por sucursal
+    
     telefonos_por_sucursal = {}
     for telefono in telefonos:
         sucursal = telefono.sucursal
@@ -239,53 +239,53 @@ def phones(request):
             telefonos_por_sucursal[sucursal] = []
         telefonos_por_sucursal[sucursal].append(telefono)
 
-    # Obtener todas las sucursales para el filtro
+    
     sucursales = Sucursal.objects.all()
 
 
-    # Exportar Excel si se solicita
+    
     if request.GET.get('exportar') == 'true':
-        # Ruta de la plantilla
+        
         plantilla_path = os.path.join(settings.BASE_DIR, 'app', 'static', 'templates', 'Inventario_Telefonos.xlsx')
 
-        # Verificar si la plantilla existe
+        
         if not os.path.exists(plantilla_path):
             return HttpResponse(f"Error: El archivo plantilla no se encuentra en la ruta {plantilla_path}", status=404)
 
-        # Cargar la plantilla de Excel
+        
         wb = openpyxl.load_workbook(plantilla_path)
         ws = wb.active
 
-        # Escribir la fecha actual
+        
         fecha_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        escribir_valor_en_celda(ws, 11, 12, fecha_actual)  # Escribir la fecha en la celda L11
+        escribir_valor_en_celda(ws, 11, 12, fecha_actual)  
         ws['L11'] = fecha_actual
 
-        # Obtener los detalles de la sucursal
+        
         sucursal = Sucursal.objects.get(id=sucursal_id)
         nombre_sucursal = sucursal.nombre_sucursal
         direccion = sucursal.direccion
         telefono = sucursal.telefono
 
-        # Escribir los detalles de la sucursal
-        escribir_valor_en_celda(ws, 38, 5, nombre_sucursal)  # Escribir nombre sucursal en E38
-        escribir_valor_en_celda(ws, 38, 8, direccion)  # Escribir dirección en H38
-        escribir_valor_en_celda(ws, 38, 11, telefono)  # Escribir teléfono en K38
+        
+        escribir_valor_en_celda(ws, 38, 5, nombre_sucursal)  
+        escribir_valor_en_celda(ws, 38, 8, direccion)  
+        escribir_valor_en_celda(ws, 38, 11, telefono)  
         escribir_valor_en_celda(ws, 14, 7, nombre_sucursal)
-        # Obtener los teléfonos para esta sucursal
+        
         telefonos = Telefono.objects.filter(sucursal=sucursal)
 
-        # Escribir los datos de los teléfonos en el rango de filas 14 a N
+        
         for row_num, telefono in enumerate(telefonos, start=14):
-            escribir_valor_en_celda(ws, row_num, 4, telefono.nombre_dueño)  # Columna C: Nombre Dueño
-            escribir_valor_en_celda(ws, row_num, 5, telefono.modelo_telefono)  # Columna D: Modelo
-            escribir_valor_en_celda(ws, row_num, 6, telefono.fono)  # Columna E: Fono 
+            escribir_valor_en_celda(ws, row_num, 4, telefono.nombre_dueño)  
+            escribir_valor_en_celda(ws, row_num, 5, telefono.modelo_telefono)  
+            escribir_valor_en_celda(ws, row_num, 6, telefono.fono)   
 
-        # Generar la respuesta de descarga
+        
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = 'attachment; filename=inventario_actualizado.xlsx'
         
-        # Guardar el archivo en la respuesta HTTP
+        
         wb.save(response)
 
         print("Sucursal ID:", sucursal_id)
@@ -317,7 +317,7 @@ def modificar_telefono(request, telefono_id):
             telefono.fono = fono
             telefono.sucursal_id = sucursal_id
             telefono.save()
-            return redirect('phones')  # Redirigir a la vista principal
+            return redirect('phones')  
 
     return JsonResponse({'error': 'Solicitud inválida'}, status=400)
 
@@ -328,13 +328,13 @@ def eliminar_telefonos(request):
             data = json.loads(request.body)
             ids = data.get('ids', [])
             if ids:
-                # Verificar que los IDs estén correctos
+                
                 print(f'IDs recibidos para eliminación: {ids}')
                 
-                # Eliminar los teléfonos con los IDs recibidos
+                
                 telefonos_a_eliminar = Telefono.objects.filter(id__in=ids)
                 
-                # Verificar si se encontraron teléfonos para eliminar
+                
                 if telefonos_a_eliminar.exists():
                     telefonos_a_eliminar.delete()
                     return JsonResponse({'success': True})
@@ -359,14 +359,14 @@ def login_function(request):
             messages.error(request, "Debes ingresar un correo y una contraseña.")
             return redirect("login")
 
-        # Verificar si el usuario existe
+        
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             messages.error(request, "No se encontró un usuario con ese correo.")
             return redirect("login")
 
-        # Autenticar usando el email
+        
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
@@ -381,4 +381,4 @@ def login_function(request):
 
 def logout_function(request):
     logout(request)
-    return redirect("login")  # Redirige a la página de login
+    return redirect("login")  

@@ -5,7 +5,6 @@ function abrirModalEditar(telefonoId, nombre, modelo, fono, sucursalId) {
     document.getElementById('fono_editar').value = fono;
     document.getElementById('sucursal_editar').value = sucursalId;
 
-    // Cambiar dinámicamente la acción del formulario
     document.getElementById('formEditarTelefono').action = `/modificar_telefono/${telefonoId}/`;
 
     let modal = new bootstrap.Modal(document.getElementById('modalEditarTelefono'));
@@ -13,14 +12,8 @@ function abrirModalEditar(telefonoId, nombre, modelo, fono, sucursalId) {
 }
 
 function openAddPhoneModal() {
-    // Limpiar los campos del formulario
     document.getElementById("formTelefono").reset();
 
-    // Puedes cerrar cualquier posible mensaje de error en el formulario si existiera
-    // Limpiar los mensajes de error, si es que los hay
-    // document.querySelector(".error-message").textContent = "";
-
-    // Abrir el modal
     const modal = new bootstrap.Modal(document.getElementById('modalTelefono'));
     modal.show();
 }
@@ -32,12 +25,8 @@ document.getElementById('formEditarTelefono').addEventListener('submit', functio
     this.submit();
 });
 
-// Función para eliminar un teléfono
 
-
-// Función para eliminar varios teléfonos
 function eliminar_telefono() {
-    // Obtener los checkboxes seleccionados
     const checkboxes = document.querySelectorAll('.telefono-checkbox:checked');
     const idsSeleccionados = [];
 
@@ -50,12 +39,11 @@ function eliminar_telefono() {
         return;
     }
 
-    // Enviar la solicitud AJAX al backend
     fetch('/eliminar_telefonos/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')  // Obtener CSRF token si es necesario
+            'X-CSRFToken': getCookie('csrftoken')  
         },
         body: JSON.stringify({ ids: idsSeleccionados })
     })
@@ -64,7 +52,7 @@ function eliminar_telefono() {
         console.log('Respuesta del servidor:', data);
         if (data.success) {
             alert('Los teléfonos seleccionados han sido eliminados');
-            location.reload();  // Recargar la página para ver los cambios
+            location.reload();  
         } else {
             alert('No se pudo eliminar el teléfono. ' + (data.message || ''));
         }
@@ -76,11 +64,9 @@ function eliminar_telefono() {
 }
 
 function toggleCheckboxes() {
-    // Obtener el estado del checkbox "Seleccionar todo"
     const checkAll = document.getElementById('check-all');
     const checkboxes = document.querySelectorAll('.telefono-checkbox');
 
-    // Marcar o desmarcar todos los checkboxes según el estado de "Seleccionar todo"
     checkboxes.forEach(function(checkbox) {
         checkbox.checked = checkAll.checked;
     });
