@@ -3,22 +3,26 @@ body {
 }
 
 
-.tabla-productos{
-    position: absolute;
-    margin-top: 70px;
-    width: 1000px;
-    justify-content: center;
-    margin-left: 250px;
+.tabla-productos {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center; 
+    margin: 70px auto 60px auto; 
+    width: 80%; 
+    max-width: 1000px; 
+    padding-bottom: 80px; 
 }
 
 
 .table th, .table td {
-    padding: 5px; /* Reduce el espacio entre celdas */
-    text-align: center; /* Centra el texto */
+    padding: 5px; 
+    text-align: center; 
 }
 
-.title-container{
+.title-container {
     text-align: center;
+    margin-bottom: 20px; 
 }
 
 .container-list{
@@ -27,31 +31,31 @@ body {
     height: 200px;
     margin-left: 200px;
     margin-top: 50px;
+    
 }
 
-/*clase del container de los botones agregar y eliminar*/ 
 .container-buttoms {
     position: fixed;
     bottom: 0;
     left: 50%;
-    transform: translateX(-50%); /* Centra el contenedor horizontalmente */
-    background-color: transparent; /* Blanco con 50% de transparencia */
+    transform: translateX(-50%); 
+    background-color: transparent; 
     padding: 10px;
     display: flex;
-    justify-content: center; /* Centra los botones horizontalmente */
-    align-items: center; /* Alinea los botones verticalmente */
-    z-index: 9999; /* Para asegurarte de que los botones se muestren sobre otros elementos */
-    width: 100%; /* Para asegurarte de que ocupe todo el ancho */
+    justify-content: center; 
+    align-items: center; 
+    z-index: 9999; 
+    width: 100%; 
     height: 70px;
 }
 
 .container-buttoms button {
-    margin: 0 10px; /* Espacio entre los botones */
+    margin: 0 10px; 
 }
 
 .tabla-productos {
-    margin-bottom: 60px; /* Esto asegura que el contenido de la tabla no quede oculto detrás de los botones */
-    padding-bottom: 80px; /* Ajusta según la altura del contenedor de los botones */
+    margin-bottom: 60px; 
+    padding-bottom: 80px; 
 }
 
 .form-group{

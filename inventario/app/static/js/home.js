@@ -1,11 +1,11 @@
 function mostrarModal(tipo, id, nombre, numero_serie, precio, cantidad, tipoProducto, sucursal) {
-    console.log('Tipo:', tipo);  // Debe ser 'modificar' o 'agregar'
+    console.log('Tipo:', tipo);  
     console.log('ID:', id);
     console.log('Nombre:', nombre);
     console.log('Número de serie', numero_serie)
     console.log('Precio:', precio);
     console.log('Cantidad:', cantidad);
-    console.log('Tipo Producto:', tipoProducto); // Aquí debe mostrarse 'Electrónica'
+    console.log('Tipo Producto:', tipoProducto); 
     console.log('Sucursal:', sucursal);
     
     if (tipo === 'modificar') {
@@ -14,10 +14,9 @@ function mostrarModal(tipo, id, nombre, numero_serie, precio, cantidad, tipoProd
         document.querySelector('#numero_serie').value = numero_serie;
         document.querySelector('#precio').value = precio;
         document.querySelector('#cantidad').value = cantidad;
-        document.querySelector('#tipo').value = tipoProducto;  // ✅ Corregido
+        document.querySelector('#tipo').value = tipoProducto;  
         document.querySelector('#sucursal').value = sucursal;  
 
-        // Verificar si la opción de sucursal existe, si no, agregarla
         let sucursalSelect = document.querySelector('#sucursal');
         let optionExists = false;
 
@@ -62,13 +61,10 @@ function eliminarProductos() {
         return;
     }
 
-    // Confirmación antes de eliminar
     const confirmar = confirm('¿Estás seguro de que deseas eliminar los productos seleccionados?');
     if (confirmar) {
-        // Obtener los IDs de los productos seleccionados
         const idsProducto = Array.from(productosSeleccionados).map(producto => producto.value);
         
-        // Enviar la solicitud al servidor para eliminar los productos
         fetch('/eliminar-productos/', {
             method: 'POST',
             headers: {
@@ -87,15 +83,13 @@ function eliminarProductos() {
             // Lógica de éxito
             console.log('Productos eliminados:', data);
 
-            // Eliminar los productos seleccionados del DOM
             productosSeleccionados.forEach(producto => {
-                const productoElemento = producto.closest('tr');  // Suponiendo que cada producto está dentro de un <tr>
+                const productoElemento = producto.closest('tr');  
                 if (productoElemento) {
-                    productoElemento.remove();  // Elimina la fila correspondiente al producto
+                    productoElemento.remove();  
                 }
             });
 
-            // Opcional: Actualizar el conteo de productos o realizar otras acciones de UI
             actualizarConteoProductos();
         })
         .catch(error => {
@@ -106,7 +100,7 @@ function eliminarProductos() {
 
 function actualizarConteoProductos() {
     const productosRestantes = document.querySelectorAll('input[name="producto"]').length;
-    const contadorProductos = document.getElementById('contador-productos'); // Asumiendo que tienes un elemento con este ID para mostrar el conteo
+    const contadorProductos = document.getElementById('contador-productos');
 
     if (contadorProductos) {
         contadorProductos.textContent = `Productos restantes: ${productosRestantes}`;
@@ -118,10 +112,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     if (checkAll) {
         checkAll.addEventListener('change', function(event) {
-            // Obtener todas las checkboxes de productos
             const checkboxes = document.querySelectorAll('input[name="producto"]');
             
-            // Seleccionar o desmarcar todas las checkboxes de productos
             checkboxes.forEach(checkbox => {
                 checkbox.checked = event.target.checked;
             });
@@ -130,16 +122,3 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('El checkbox con el id "check-all" no existe.');
     }
 });
-/*
-document.getElementById('formModificar').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    // Obtener los valores del formulario
-    const nombre = document.getElementById('nombre').value;
-    const precio = document.getElementById('precio').value;
-    const sucursal = document.getElementById('sucursal').value;
-    
-    // Aquí puedes agregar la lógica para enviar los datos al servidor para guardar los cambios
-    console.log('Datos modificados:', { nombre, precio, sucursal });
-});
-*/

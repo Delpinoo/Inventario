@@ -8,11 +8,11 @@ VERSION_FILE = "version.txt"
 EXE_FILE = "InventaryTech.exe"
 
 def obtener_version_local():
-    """Lee la versión actual del programa"""
-    return "1.0.0"  # Reemplázalo con la versión actual de tu programa
+
+    return "1.0.0"  
 
 def obtener_version_remota():
-    """Consulta la versión más reciente en GitHub"""
+    
     try:
         response = requests.get(GITHUB_REPO + VERSION_FILE, timeout=5)
         if response.status_code == 200:
@@ -22,7 +22,7 @@ def obtener_version_remota():
     return None
 
 def descargar_actualizacion():
-    """Descarga la nueva versión y la reemplaza"""
+    
     nueva_version = obtener_version_remota()
     if not nueva_version:
         print("⚠ No se pudo verificar la actualización.")
@@ -48,5 +48,5 @@ def descargar_actualizacion():
     else:
         print("🚀 Ya tienes la última versión.")
 
-# Verificar actualizaciones al inicio
+
 descargar_actualizacion()
